@@ -35,9 +35,16 @@ class Tela:
                 vacant_physique = int(self.values['vacant_physique'])
                 vacant_public = int(self.values['vacant_public'])
                 Tela.vacantArray.append({ vacant_name ,vacant_raisonnement,vacant_physique,vacant_public})
-                self.window['textbox'].update({ vacant_name ,vacant_raisonnement,vacant_physique,vacant_public}, append=True)
+                self.window['textbox'].update('Vaga : {name} | R : {vacant_raisonnement} | V : {vacant_physique}| P: {vacant_public}'.format(
+                    name=vacant_name, 
+                    vacant_raisonnement=vacant_raisonnement,
+                    vacant_physique=vacant_physique,
+                    vacant_public=vacant_public) + '\n', append=True)
             if self.button == 'Recomendar':
-                fuzzy.fuzzy(Tela.vacantArray)
+                vacant_raisonnement_form = int(self.values['vacant_raisonnement_form'])
+                vacant_physique_form = int(self.values['vacant_physique_form'])
+                vacant_public_form = int(self.values['vacant_public_form'])
+                fuzzy.fuzzy(Tela.vacantArray,vacant_raisonnement_form,vacant_physique_form,vacant_public_form)
 
 if __name__ == '__main__':        
     tela = Tela()
