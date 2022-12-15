@@ -3,6 +3,7 @@ import PySimpleGUI as sg
 
 class Tela:
     vacantArray = []
+    index = 0
     def __init__(self):
         layout = [
             [sg.Text('-------------------- Cadastro de Vaga --------------------------')],
@@ -34,12 +35,21 @@ class Tela:
                 vacant_raisonnement = int(self.values['vacant_raisonnement'])
                 vacant_physique = int(self.values['vacant_physique'])
                 vacant_public = int(self.values['vacant_public'])
-                Tela.vacantArray.append({ vacant_name ,vacant_raisonnement,vacant_physique,vacant_public})
-                self.window['textbox'].update('Vaga : {name} | R : {vacant_raisonnement} | V : {vacant_physique}| P: {vacant_public}'.format(
+
+                vacant = {'vacant_name' : vacant_name,
+                          'vacant_raisonnement' : vacant_raisonnement,
+                          'vacant_physique' : vacant_physique,
+                          'vacant_public' : vacant_public}
+
+                Tela.vacantArray.append(vacant)
+                Tela.index = Tela.index + 1
+                self.window['textbox'].update('Vaga {index}: {name} | R : {vacant_raisonnement} | V : {vacant_physique}| P: {vacant_public}'.format(
+                    index=Tela.index,
                     name=vacant_name, 
                     vacant_raisonnement=vacant_raisonnement,
                     vacant_physique=vacant_physique,
                     vacant_public=vacant_public) + '\n', append=True)
+            
             if self.button == 'Recomendar':
                 vacant_raisonnement_form = int(self.values['vacant_raisonnement_form'])
                 vacant_physique_form = int(self.values['vacant_physique_form'])
