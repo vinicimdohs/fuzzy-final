@@ -3,14 +3,9 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
 def fuzzy(vacantArray : list[dict[str, any]],vacant_raisonnement_form,vacant_physique_form,vacant_public_form):
-    # QUAL ARRANGE DEVO COLOCAR ??
-    raisonnemet = ctrl.Antecedent(np.arange(0,11,1),'raciocinio')
-    public = ctrl.Antecedent(np.arange(0,11,1),'publico')
-    physique = ctrl.Antecedent(np.arange(0,11,1),'vigor')
+    weighted_average_candidate = ctrl.Antecedent(np.arange(0,11,1),'average')
 
-    raisonnemet.automf(number=3,names=['baixo','medio','alto'])
-    public.automf(number=3,names=['baixo','medio','alto'])
-    physique.automf(number=3,names=['baixo','medio','alto'])
+    weighted_average_candidate.automf(number=3,names=['fisico','social','intelectual'])
 
     # QUAL ARRANGE DEVO COLOCAR
     vagas = ctrl.Consequent(np.arange(0,100,1),'vagas')
@@ -29,18 +24,12 @@ def fuzzy(vacantArray : list[dict[str, any]],vacant_raisonnement_form,vacant_phy
         
         vagas[v_name] = fuzz.trimf(vagas.universe,[weighted_average * 0.1,weighted_average * 5,weighted_average * 9.9])
 
-        # weighted_average_vacant = ((vacant_raisonnement_form * 99) + (vacant_public_form * 50) + (vacant_physique_form * 1))/(99 + 50 + 1)
-        # DEFINIR AS REGRAS COMPARAR O VALOR INPUTADO : BAIXO||MEDIO|ALTO , com os valores da vaga para DEFINIR AS REGRAS
-        # if weighted_average_vacant < 3.3:
-        raisonnemet_rule = 'baixo' # || medio || alto
-        public_rule = 'medio' # || baixo || alto
-        physique_rule = 'alto' # baixo || medio
-
-        #Se a média do caboco tá batendo com a média da vaga, então pimba
-        rule = ctrl.Rule(raisonnemet[raisonnemet_rule]| public[public_rule] | physique[physique_rule], vagas[v_name]) 
-        rule2 = ctrl.Rule(raisonnemet[raisonnemet_rule]| public[public_rule] | physique[physique_rule], vagas[v_name])
-        rule3 = ctrl.Rule(raisonnemet[raisonnemet_rule]| public[public_rule] | physique[physique_rule], vagas[v_name])
-        rules.append(rule)
+        if (v_physique/(v_public + v_raisonnement)) >= 0.5 : 
+            rules.append(ctrl.Rule(weighted_average_candidate['fisico'], vagas[v_name]))
+        if (v_public/(v_physique + v_raisonnement)) >= 0.5 : 
+            rules.append(ctrl.Rule(weighted_average_candidate['social'], vagas[v_name]))
+        if (v_raisonnement/(v_physique + v_public)) >= 0.5: 
+            rules.append(ctrl.Rule(weighted_average_candidate['intelectual'], vagas[v_name]))
 
     vagas.view()    
     
@@ -48,10 +37,8 @@ def fuzzy(vacantArray : list[dict[str, any]],vacant_raisonnement_form,vacant_phy
 
     recomendacao = ctrl.ControlSystemSimulation(recomendacao_vaga)
 
-    recomendacao.input['raciocinio'] = vacant_raisonnement_form
-    recomendacao.input['publico'] = vacant_public_form
-    recomendacao.input['vigor'] = vacant_physique_form
-
+    recomendacao.input['average'] = ((vacant_raisonnement_form * 99) + (vacant_public_form * 50) + (vacant_physique_form * 1))/(99 + 50 + 1)
+   
     recomendacao.compute()
 
     vagas.view(sim = recomendacao)
