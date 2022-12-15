@@ -22,13 +22,13 @@ def fuzzy(vacantArray : list[dict[str, any]],vacant_raisonnement_form,vacant_phy
         
         weighted_average = ((v_raisonnement * 99) + (v_public * 50) + (v_physique * 1))/(99 + 50 + 1)
         
-        vagas[v_name] = fuzz.trimf(vagas.universe,[weighted_average * 0.1,weighted_average * 5,weighted_average * 9.9])
+        vagas[v_name] = fuzz.trimf(vagas.universe,[weighted_average * 1,weighted_average * 5,weighted_average * 9.9])
 
         if (v_physique/(v_public + v_raisonnement)) >= 0.5 : 
             rules.append(ctrl.Rule(weighted_average_candidate['fisico'], vagas[v_name]))
-        if (v_public/(v_physique + v_raisonnement)) >= 0.5 : 
+        if (v_public/(v_physique + v_raisonnement)) >= 0.5 :
             rules.append(ctrl.Rule(weighted_average_candidate['social'], vagas[v_name]))
-        if (v_raisonnement/(v_physique + v_public)) >= 0.5: 
+        if (v_raisonnement/(v_physique + v_public)) >= 0.5 : 
             rules.append(ctrl.Rule(weighted_average_candidate['intelectual'], vagas[v_name]))
 
     vagas.view()    
